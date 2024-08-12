@@ -28,10 +28,10 @@ async function main() {
         secret: 'secret',
         resave: false,
         saveUninitialized: false,
-        cookie: { secure: false },
+        cookie: { secure: false }, // Quitar en producción
     }));
     app.use(cors({
-        origin: ["http://127.0.0.1:5555", "http://localhost:5555"],
+        origin: ['http://127.0.0.1:5555', 'http://localhost:5555'],
         credentials: true,
     }))
 
@@ -52,19 +52,19 @@ async function main() {
     app.get('/auth/status', async (req, res) => {
         if (req.session.isAuthenticated) {
             const people = google.people({
-                version: "v1",
+                version: 'v1',
                 auth: oauth2Client
             })
 
             const userinfo = await people.people.get({
-                resourceName: "people/me",
-                personFields: "names,emailAddresses,photos"
+                resourceName: 'people/me',
+                personFields: 'names,emailAddresses,photos'
             })
 
             const response = {
                 loggedIn: true,
-                name: userinfo.data.names[0].displayName ?? "Desconocido",
-                email: userinfo.data.emailAddresses[0].value ?? "Desconocido",
+                name: userinfo.data.names[0].displayName ?? 'Unknown',
+                email: userinfo.data.emailAddresses[0].value ?? 'Unknown',
                 photo: userinfo.data.photos[0].url ?? null
             }
 
@@ -73,9 +73,8 @@ async function main() {
         } else {
             const response = {
                 loggedIn: false,
-                message: "Not logged in."
+                message: 'Not logged in.'
             }
-            res.setHeader('Content-Type', 'application/json');
             res.json(response)
         }
     })
@@ -97,7 +96,7 @@ async function main() {
                     userCredential = tokens;
                     req.session.isAuthenticated = true;
 
-                    res.redirect("http://localhost:5555")
+                    res.redirect('http://localhost:5555')
                 } catch (error) {
                     console.error('Error getting tokens:', error);
                     res.status(500).send('Error getting tokens');
@@ -149,6 +148,6 @@ async function main() {
 
 
     const server = http.createServer(app);
-    server.listen(3000);
+    server.listen(process.env.PORT);
 }
 main().catch(console.error);
