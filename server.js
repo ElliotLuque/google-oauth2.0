@@ -5,6 +5,7 @@ const { google } = require('googleapis');
 const crypto = require('crypto');
 const express = require('express');
 const session = require('express-session');
+const cors = require('cors')
 
 const oauth2Client = new google.auth.OAuth2(
     process.env.CLIENT_ID,
@@ -12,8 +13,11 @@ const oauth2Client = new google.auth.OAuth2(
     process.env.REDIRECT_URL
 );
 
+google.options({ auth: oauth2Client })
+
 const scopes = [
     'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/userinfo.email',
 ];
 let userCredential = null;
 
@@ -24,10 +28,16 @@ async function main() {
         secret: 'secret',
         resave: false,
         saveUninitialized: false,
+        cookie: { secure: false },
     }));
+    app.use(cors({
+        origin: ["http://127.0.0.1:5555", "http://localhost:5555"],
+        credentials: true,
+    }))
 
-    app.get('/login', async (req, res) => {
-        const state = crypto.randomBytes(32).toString('hex');
+    app.get('/auth/login', async (req, res) => {
+        const state = crypto.randomBytes(32).toString('hex')
+
         req.session.state = state;
 
         const authorizationUrl = oauth2Client.generateAuthUrl({
@@ -41,11 +51,29 @@ async function main() {
 
     app.get('/auth/status', async (req, res) => {
         if (req.session.isAuthenticated) {
+            const people = google.people({
+                version: "v1",
+                auth: oauth2Client
+            })
+
+            const userinfo = await people.people.get({
+                resourceName: "people/me",
+                personFields: "names,emailAddresses,photos"
+            })
+
+            const response = {
+                loggedIn: true,
+                name: userinfo.data.names[0].displayName ?? "Desconocido",
+                email: userinfo.data.emailAddresses[0].value ?? "Desconocido",
+                photo: userinfo.data.photos[0].url ?? null
+            }
+
             res.setHeader('Content-Type', 'application/json');
-            // TODO: Llamar a google.people
+            res.json(response)
         } else {
             const response = {
-                message: "not logged in"
+                loggedIn: false,
+                message: "Not logged in."
             }
             res.setHeader('Content-Type', 'application/json');
             res.json(response)
@@ -57,23 +85,32 @@ async function main() {
 
         if (q.error) {
             console.log('Error:' + q.error);
-        } else if (q.state !== req.session.state) {
-            console.log('State mismatch. Possible CSRF attack');
-            res.end('State mismatch. Possible CSRF attack');
+            res.status(400).send('Error during authentication');
         } else {
-            let { tokens } = await oauth2Client.getToken(q.code);
-            oauth2Client.setCredentials(tokens);
-            userCredential = tokens;
-            req.session.isAuthenticated = true;
+            if (q.state !== req.session.state) {
+                console.log('State mismatch. Possible CSRF attack');
+                res.status(400).send('State mismatch. Possible CSRF attack');
+            } else {
+                try {
+                    let { tokens } = await oauth2Client.getToken(q.code);
+                    oauth2Client.setCredentials(tokens);
+                    userCredential = tokens;
+                    req.session.isAuthenticated = true;
 
-            res.setHeader('Content-Type', 'application/json');
-            res.json(userCredential)
+                    res.redirect("http://localhost:5555")
+                } catch (error) {
+                    console.error('Error getting tokens:', error);
+                    res.status(500).send('Error getting tokens');
+                }
+            }
         }
     });
 
-    app.get('/revoke', async (req, res) => {
-        let postData = "token=" + userCredential.access_token;
-
+    app.get('/auth/logout', async (req, res) => {
+        if (!userCredential.access_token) {
+            return res.status(400).json({ message: 'No token to revoke.' });
+        }
+        let postData = `token=${userCredential.access_token}`;
         let postOptions = {
             host: 'oauth2.googleapis.com',
             port: '443',
@@ -85,12 +122,22 @@ async function main() {
             }
         };
 
-        const postReq = https.request(postOptions, function(res) {
-            res.setEncoding('utf8');
-            res.on('data', d => {
-                console.log('Response: ' + d);
-            });
+        const postReq = https.request(postOptions, (revokeRes) => {
+            if (revokeRes.statusCode === 200) {
+                req.session.destroy(err => {
+                    if (err) {
+                        return res.status(500).json({ message: 'Failed to log out.' });
+                    }
+
+                    res.clearCookie('connect.sid', { path: '/' });
+                    return res.json({ message: 'Logged out and token revoked successfully' });
+                });
+            } else {
+                res.status(500).json({ message: 'Failed to revoke token.' });
+            }
         });
+
+        req.session.isAuthenticated = false;
 
         postReq.on('error', error => {
             console.log(error)
