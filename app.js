@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000"
+const SERVER_BASE_URL = "http://localhost:3000"
 
 function App() {
     let isAuthenticated
@@ -6,7 +6,7 @@ function App() {
 
     function logout() {
         m.request({
-            url: `${BASE_URL}/auth/logout`,
+            url: `${SERVER_BASE_URL}/auth/logout`,
             withCredentials: true,
         })
             .then(() => {
@@ -18,7 +18,7 @@ function App() {
     return {
         oninit: () => {
             m.request({
-                url: `${BASE_URL}/auth/status`,
+                url: `${SERVER_BASE_URL}/auth/status`,
                 withCredentials: true,
             })
                 .then(res => {
@@ -88,7 +88,7 @@ function App() {
                         m("h2", "Login"),
                         m("button", {
                             onclick: () => {
-                                window.location = `${BASE_URL}/auth/login`
+                                window.location = `${SERVER_BASE_URL}/auth/login`
                             },
                             style: {
                                 display: "block",
