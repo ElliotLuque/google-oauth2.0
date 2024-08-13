@@ -87,4 +87,4 @@ Para iniciar el cliente, simplemente abre index.html, por ejemplo con LiveServer
 ![loginflow]
 
 [hero]: https://www.google.es/images/branding/googlelogo/2x/googlelogo_color_160x56dp.png
-[loginflow]: https://github.com/user-attachments/assets/93ba44f0-0568-4e3f-a795-3759e83af7e6
+[loginflow]: https://github.com/user-attachments/assets/0cdd04c0-e5a8-4321-ae15-10b0412df10a
