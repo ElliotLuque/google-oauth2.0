@@ -22,7 +22,7 @@ cd google-oauth2.0
 ### 2. Instalar dependencias
 
 
-Instala todas las dependencias del proyecto usando npm:
+Instala todas las dependencias del proyecto usando composer:
 
 ```bash
 composer install
