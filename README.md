@@ -38,7 +38,7 @@ Usa el fichero .env.example proporcionado para crear un archivo .env y añadir l
 ```env
 CLIENT_ID=tu-google-client-id
 CLIENT_SECRET=tu-google-client-secret
-CLIENT_URL=tu-url-de-cliente-frontend
+CLIENT_URL=http://localhost:5555
 CALLBACK_URL=http://localhost:3000/oauth2callback
 ```
 > [!NOTE]
@@ -66,10 +66,10 @@ Para iniciar el cliente, simplemente abre index.html, por ejemplo con LiveServer
 
 ```plaintext
 ├── server.php           # Archivo principal del servidor
+├── app.js               # Archivo principal del frontend
 ├── composer.json        # Archivo de configuración de Composer
 ├── .env                 # Variables de entorno (excluido en .gitignore)
 ├── README.md            # Documentación del proyecto
-├── app.js               # Cliente frontend del proyecto
 └── vendor/              # Dependencias del proyecto
 ```
 
