@@ -38,9 +38,17 @@ Usa el fichero .env.example proporcionado para crear un archivo .env y añadir l
 ```env
 CLIENT_ID=tu-google-client-id
 CLIENT_SECRET=tu-google-client-secret
-CLIENT_URL=tu-url-de-cliente-frontend
+CLIENT_URL=http://localhost:5555
 CALLBACK_URL=http://localhost:3000/oauth2callback
 ```
+
+> [!NOTE]
+> *CLIENT_ID* y *CLIENT_SECRET*: las credenciales de google
+>
+> *CLIENT_URL*: la url del cliente frontend a donde redireccionará después de iniciar sesión
+>
+> *CALLBACK_URL* tiene que ser una URL de redireccionamiento autorizado en la consola de Google (incluyendo http:// o https://)
+> 
 
 ### 4. Inicia el servidor
 
