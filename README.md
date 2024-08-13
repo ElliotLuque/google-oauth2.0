@@ -45,7 +45,7 @@ CALLBACK_URL=http://localhost:3000/oauth2callback
 > *CLIENT_ID* y *CLIENT_SECRET*: las credenciales de google
 >
 > *CLIENT_URL*: la url del cliente frontend a donde redireccionaŕa después de iniciar sesión
-
+>
 > *CALLBACK_URL* tiene que ser una URL de redireccionamiento autorizado en la consola de Google (incluyendo http:// o https://)
 > 
 
