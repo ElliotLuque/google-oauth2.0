@@ -4,7 +4,7 @@
   
    ![hero]
 
-   Login con Google en Mithril.js y Node Express
+   Login con Google en Mithril.js y PHP
    
 </div>
 
@@ -24,7 +24,7 @@ cd google-oauth2.0
 Instala todas las dependencias del proyecto usando npm:
 
 ```bash
-npm install
+composer install
 ```
 
 ### 3. Configura variables de entorno
@@ -32,21 +32,22 @@ npm install
 > [!IMPORTANT]
 > Desde la consola de Google deberás habilitar la API de **People** y crear unas credenciales de autorización para usar en este proyecto. Más información: [Google OAuth Web Server](https://developers.google.com/identity/protocols/oauth2/web-server?hl=es-419)
 
-Usa el fichero .env.example proporcionado para añadir las variables necesarias para el funcionamiento del proyecto.
+Usa el fichero .env.example proporcionado para crear un archivo .env y añadir las variables necesarias para el funcionamiento del proyecto.
 
  
 ```env
 CLIENT_ID=tu-google-client-id
 CLIENT_SECRET=tu-google-client-secret
-REDIRECT_URL=http://localhost:3000/oauth2callback
-PORT=3000
+CLIENT_URL=tu-url-de-cliente-frontend
+CALLBACK_URL=http://localhost:3000/oauth2callback
 ```
 > [!NOTE]
 > *CLIENT_ID* y *CLIENT_SECRET*: las credenciales de google
 >
-> *REDIRECT_URL* tiene que ser una URL de redireccionamiento autorizado en la consola de Google (incluyendo http:// o https://)
+> *CLIENT_URL*: la url del cliente frontend a donde redireccionaŕa después de iniciar sesión
+
+> *CALLBACK_URL* tiene que ser una URL de redireccionamiento autorizado en la consola de Google (incluyendo http:// o https://)
 > 
-> *PORT*: el puerto del servidor
 
 
 ### 4. Inicia el servidor
@@ -54,7 +55,7 @@ PORT=3000
 Para iniciar el servidor, usa el siguiente comando:
 
 ```bash
-npm start
+php -S localhost:3000
 ```
 
 ### 5. Inicia el cliente
@@ -64,11 +65,12 @@ Para iniciar el cliente, simplemente abre index.html, por ejemplo con LiveServer
 ## 📁 Estructura del proyecto
 
 ```plaintext
-├── server.js            # Archivo principal del servidor
-├── package.json         # Archivo de configuración de npm
+├── server.php           # Archivo principal del servidor
+├── composer.json        # Archivo de configuración de Composer
 ├── .env                 # Variables de entorno (excluido en .gitignore)
 ├── README.md            # Documentación del proyecto
-└── node_modules/        # Dependencias del proyecto
+├── app.js               # Cliente frontend del proyecto
+└── vendor/              # Dependencias del proyecto
 ```
 
 ## 🚀 Funcionamiento

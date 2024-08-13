@@ -22,7 +22,7 @@ function App() {
                 withCredentials: true,
             })
                 .then(res => {
-                    user = res
+                    user = res.user
                     isAuthenticated = res.loggedIn
                 })
         },
