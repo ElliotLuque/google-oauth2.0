@@ -71,13 +71,12 @@ npm start
 
 ## 🚀 Funcionamiento
 
-- OAuth2 con Google: El servidor implementa el flujo de autenticación OAuth2 con Google.
-  - Primero, desde el cliente se le redirige al endpoint /auth/login, que a su vez redirige a la página de inicio de sesión de Google, allí crea la sesión y el token para devolver hacia ***CALLBACK_URL*** la información una vez logueado.
+- **Autenticación del Usuario**: Cuando el usuario accede al endpoint `/auth/login`, se le redirige a la página de inicio de sesión de Google. Tras iniciar sesión, Google redirige al usuario de vuelta a la URL de callback especificada (`/oauth2callback`). El servidor maneja la respuesta de Google, crea una sesión para el usuario y almacena el token de acceso.
 
-    Se ha configurado que este callback vuelva a redirigr a la página del cliente, donde se mostrará su información
-- Gestión de Sesión: Utiliza express-session para manejar las sesiones de usuario.
-  - Se guarda una sesión en forma de cookie en el navegador, que contiene credenciales del usuario, como el token y su duración, este más adelante se usa para verificar la autorización del usuario en las peticiones.
-- Revocación de Token: El endpoint /auth/logout revoca el token de acceso de Google y destruye la sesión.
-  - Una vez se cierre la sesión también se revocará el token JWT
+- **Redirección a la Página del Cliente**: Después del inicio de sesión, el servidor redirige al usuario de vuelta a la página del cliente. Allí, el cliente puede obtener la información del usuario desde el endpoint `/auth/status`.
+
+- **Gestión de Sesión**: El servidor utiliza `express-session` para gestionar las sesiones de usuario. La sesión se almacena en una cookie en el navegador, que contiene credenciales del usuario, como el token de acceso y su duración. Esta información se utiliza para verificar la autorización del usuario en futuras peticiones.
+  
+- **Revocación de Token**: El endpoint `/auth/logout` revoca el token de acceso de Google y destruye la sesión del usuario. Esto asegura que el token ya no sea válido y el usuario quede desconectado.
 
  [hero]: https://www.google.es/images/branding/googlelogo/2x/googlelogo_color_160x56dp.png
