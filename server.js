@@ -10,7 +10,7 @@ const cors = require('cors')
 const oauth2Client = new google.auth.OAuth2(
     process.env.CLIENT_ID,
     process.env.CLIENT_SECRET,
-    process.env.REDIRECT_URL
+    process.env.CALLBACK_URL
 );
 
 google.options({ auth: oauth2Client })
@@ -19,6 +19,7 @@ const scopes = [
     'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/userinfo.email',
 ];
+
 let userCredential = null;
 
 async function main() {
@@ -30,8 +31,9 @@ async function main() {
         saveUninitialized: false,
         cookie: { secure: false },
     }));
+
     app.use(cors({
-        origin: ["http://127.0.0.1:5555", "http://localhost:5555"],
+        origin: process.env.CLIENT_URL,
         credentials: true,
     }))
 
@@ -63,8 +65,8 @@ async function main() {
 
             const response = {
                 loggedIn: true,
-                name: userinfo.data.names[0].displayName ?? "Desconocido",
-                email: userinfo.data.emailAddresses[0].value ?? "Desconocido",
+                name: userinfo.data.names[0].displayName ?? "Unknown",
+                email: userinfo.data.emailAddresses[0].value ?? "Unknown",
                 photo: userinfo.data.photos[0].url ?? null
             }
 
@@ -97,7 +99,7 @@ async function main() {
                     userCredential = tokens;
                     req.session.isAuthenticated = true;
 
-                    res.redirect("http://localhost:5555")
+                    res.redirect(process.env.CLIENT_URL)
                 } catch (error) {
                     console.error('Error getting tokens:', error);
                     res.status(500).send('Error getting tokens');
