@@ -79,4 +79,7 @@ npm start
   
 - **Revocación de Token**: El endpoint `/auth/logout` revoca el token de acceso de Google y destruye la sesión del usuario. Esto asegura que el token ya no sea válido y el usuario quede desconectado.
 
- [hero]: https://www.google.es/images/branding/googlelogo/2x/googlelogo_color_160x56dp.png
+![loginflow]
+
+[hero]: https://www.google.es/images/branding/googlelogo/2x/googlelogo_color_160x56dp.png
+[loginflow]:https://github.com/user-attachments/assets/93ba44f0-0568-4e3f-a795-3759e83af7e6
