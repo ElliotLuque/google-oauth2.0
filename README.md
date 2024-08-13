@@ -66,7 +66,7 @@ Para iniciar el cliente, simplemente abre index.html, por ejemplo con LiveServer
 ## 📁 Estructura del proyecto
 
 ```plaintext
-├── index.php           # Archivo principal del servidor
+├── index.php            # Archivo principal del servidor
 ├── app.js               # Archivo principal del frontend
 ├── composer.json        # Archivo de configuración de Composer
 ├── .env                 # Variables de entorno (excluido en .gitignore)
