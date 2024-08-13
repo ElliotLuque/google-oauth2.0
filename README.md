@@ -75,15 +75,12 @@ Para iniciar el cliente, simplemente abre index.html, por ejemplo con LiveServer
 
 ## 🚀 Funcionamiento
 
-- OAuth2 con Google: El servidor implementa el flujo de autenticación OAuth2 con Google.
-  - Primero, desde el cliente se le redirige al endpoint /auth/login, que a su vez redirige a la página de inicio de sesión de Google, allí crea la sesión y el token para devolver hacia ***CALLBACK_URL*** la información una vez logueado.
+- **Autenticación del Usuario**: Cuando el usuario accede al endpoint `/auth/login`, se le redirige a la página de inicio de sesión de Google. Tras iniciar sesión, Google redirige al usuario de vuelta a la URL de callback especificada, donde el servidor crea una sesión y guarda el token de acceso recibido.
 
-    Se ha configurado que este callback vuelva a redirigr a la página del cliente, donde se mostrará su información desde el endpoint /auth/status.
+- **Redirección a la Página del Cliente**: Después del inicio de sesión, el servidor redirige al usuario a la página del cliente. Allí, el cliente puede obtener la información del usuario mediante el endpoint `/auth/status`.
     
-- Gestión de Sesión: Utiliza express-session para manejar las sesiones de usuario.
-  - Se guarda una sesión en forma de cookie en el navegador, que contiene credenciales del usuario, como el token y su duración, este más adelante se usa para verificar la autorización del usuario en las peticiones.
+- **Gestión de Sesión**: PHP maneja las sesiones utilizando cookies. Una vez que el usuario está autenticado, el servidor almacena el token de acceso en la sesión del usuario. Esta sesión se mantiene en una cookie en el navegador, que se utiliza para verificar la autorización del usuario en futuras peticiones.
     
-- Revocación de Token: El endpoint /auth/logout revoca el token de acceso de Google y destruye la sesión.
-  - Una vez se cierre la sesión también se revocará el token JWT
+- **Revocación de Token**: El endpoint `/auth/logout` se encarga de revocar el token de acceso de Google y destruir la sesión del usuario. Esto asegura que el token ya no sea válido y el usuario quede desconectado.
 
  [hero]: https://www.google.es/images/branding/googlelogo/2x/googlelogo_color_160x56dp.png
